@@ -1,0 +1,60 @@
+[gd_scene load_steps=11 format=3 uid="uid://d0tyekm5axms8"]
+
+[ext_resource type="Script" uid="uid://c6im8pjatgbsk" path="res://Scripts/player.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://br73dup2bh7p" path="res://Scripts/a_star.gd" id="1_ig7tw"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_7dm0k"]
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("PanoramaSkyMaterial_7dm0k")
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 1
+background_color = Color(0.45648, 0.707497, 0.741226, 1)
+sky = SubResource("Sky_ig7tw")
+ambient_light_color = Color(0.295153, 0.59041, 0.654398, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h2yge"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dm0k"]
+albedo_color = Color(0.226805, 0.109963, 0.0111043, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
+material = SubResource("StandardMaterial3D_7dm0k")
+size = Vector3(10, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+size = Vector3(10, 0.5, 10)
+
+[node name="Main" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.828715, -0.362212, 0.426653, 0, 0.76233, 0.647189, -0.55967, -0.536336, 0.631754, 3.15209, 4.04094, 4.77906)
+environment = SubResource("Environment_0xm2m")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 100, 0)
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60147, 0)
+script = ExtResource("1_0xm2m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("CapsuleMesh_h2yge")
+
+[node name="AStar" type="Node3D" parent="."]
+script = ExtResource("1_ig7tw")
+
+[node name="Ground" type="StaticBody3D" parent="." groups=["pathable"]]
+
+[node name="MeshInstance" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_ig7tw")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ig7tw")

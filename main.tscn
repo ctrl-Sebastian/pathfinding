@@ -1,0 +1,132 @@
+[gd_scene load_steps=18 format=3 uid="uid://d0tyekm5axms8"]
+
+[ext_resource type="Script" uid="uid://c6im8pjatgbsk" path="res://Scripts/player.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://br73dup2bh7p" path="res://Scripts/a_star.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://b3t47nb1w3e1o" path="res://Scripts/enemy.gd" id="2_h2yge"]
+[ext_resource type="Material" uid="uid://bf34sbqb7lsvq" path="res://Materials/player.tres" id="2_lquwl"]
+[ext_resource type="Material" uid="uid://7naqofwuvw5g" path="res://Materials/enemy.tres" id="3_7mycd"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h2yge"]
+material = ExtResource("3_7mycd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_h2yge"]
+material = SubResource("StandardMaterial3D_0xm2m")
+height = 0.25
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_7dm0k"]
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("PanoramaSkyMaterial_7dm0k")
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 1
+background_color = Color(0.45648, 0.707497, 0.741226, 1)
+sky = SubResource("Sky_ig7tw")
+ambient_light_color = Color(0.295153, 0.59041, 0.654398, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dm0k"]
+albedo_color = Color(0.47835, 0.257173, 0.0502687, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
+material = SubResource("StandardMaterial3D_7dm0k")
+size = Vector3(100, 0.5, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+size = Vector3(100, 0.5, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
+size = Vector3(4, 4, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
+size = Vector3(4, 4, 4)
+
+[node name="Main" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 100, 0)
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60147, 5.46888)
+script = ExtResource("1_0xm2m")
+
+[node name="Pivot" type="Node3D" parent="Player"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Pivot"]
+material_override = ExtResource("2_lquwl")
+mesh = SubResource("CapsuleMesh_h2yge")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Pivot/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.371527, -0.15321)
+mesh = SubResource("CylinderMesh_h2yge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="Camera3D" type="Camera3D" parent="Player"]
+transform = Transform3D(0.828715, -0.362212, 0.426653, 0, 0.76233, 0.647189, -0.55967, -0.536336, 0.631754, 9.32634, 11.6537, 12.4883)
+environment = SubResource("Environment_0xm2m")
+
+[node name="Enemy" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60147, 0)
+script = ExtResource("2_h2yge")
+
+[node name="Pivot" type="Node3D" parent="Enemy"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy/Pivot"]
+mesh = SubResource("CapsuleMesh_h2yge")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy/Pivot/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.371527, -0.15321)
+mesh = SubResource("CylinderMesh_h2yge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Enemy"]
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="Camera3D" type="Camera3D" parent="Enemy"]
+transform = Transform3D(0.828715, -0.362212, 0.426653, 0, 0.76233, 0.647189, -0.55967, -0.536336, 0.631754, 9.32634, 11.6537, 12.4883)
+environment = SubResource("Environment_0xm2m")
+
+[node name="Timer" type="Timer" parent="Enemy"]
+wait_time = 0.1
+autostart = true
+
+[node name="AStar" type="Node3D" parent="."]
+script = ExtResource("1_ig7tw")
+debug = true
+
+[node name="Ground" type="StaticBody3D" parent="." groups=["pathable"]]
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="MeshInstance" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_ig7tw")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="ObstaclesContainer" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ObstaclesContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -6.639)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ObstaclesContainer/StaticBody3D"]
+shape = SubResource("BoxShape3D_lquwl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ObstaclesContainer/StaticBody3D"]
+visible = false
+mesh = SubResource("BoxMesh_7mycd")
+
+[connection signal="timeout" from="Enemy/Timer" to="Enemy" method="_on_timer_timeout"]
