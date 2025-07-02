@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjbpnxg441yil"]
+
+[ext_resource type="PackedScene" uid="uid://cq74y6ufppxwm" path="res://Assets/low-poly-rocks-fbx/basaltic-columns.fbx" id="1_md2el"]
+
+[node name="basaltic-columns" instance=ExtResource("1_md2el")]
+
+[node name="basaltic-columns-1" parent="." index="0"]
+transform = Transform3D(0.67486, 0, 0.42342, 0, 0.796694, 0, -0.42342, 0, 0.67486, -0.0759938, 0.761109, 0.830285)
+
+[node name="basaltic-columns-2" parent="." index="1"]
+transform = Transform3D(0.67486, 0, 0.42342, 0, 0.796694, 0, -0.42342, 0, 0.67486, 0.930083, 0.899879, 0.31461)
+
+[node name="basaltic-columns-3" parent="." index="2"]
+transform = Transform3D(0.67486, 0, 0.42342, 0, 0.796694, 0, -0.42342, 0, 0.67486, -0.0389016, 1.81639, -0.233434)
+
+[node name="basaltic-columns-4" parent="." index="3"]
+transform = Transform3D(0.67486, 0, 0.42342, 0, 0.796694, 0, -0.42342, 0, 0.67486, 0.824454, 2.52929, -0.736962)
+
+[node name="basaltic-columns-5" parent="." index="4"]
+transform = Transform3D(0.67486, 0, 0.42342, 0, 0.796694, 0, -0.42342, 0, 0.67486, -0.888816, 0.993222, 0.494286)
+
+[node name="basaltic-columns-6" parent="." index="5"]
+transform = Transform3D(0.67486, 0, 0.42342, 0, 0.796694, 0, -0.42342, 0, 0.67486, -0.943071, 1.98336, -0.723578)

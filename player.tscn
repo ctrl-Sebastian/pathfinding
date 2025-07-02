@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpti0bhau7rvy"]
+
+[ext_resource type="Script" uid="uid://c6im8pjatgbsk" path="res://Scripts/player.gd" id="1_i3pqv"]
+[ext_resource type="PackedScene" uid="uid://dsdkkbo6akdom" path="res://Assets/Tanks/GREEN/tank_1_green.glb" id="2_onrkg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i3pqv"]
+size = Vector3(1, 1.22632, 1)
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 1
+background_color = Color(0.45648, 0.707497, 0.741226, 1)
+ambient_light_color = Color(0.295153, 0.59041, 0.654398, 1)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_i3pqv")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="tank_1_green" parent="Pivot" instance=ExtResource("2_onrkg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320679, 0)
+shape = SubResource("BoxShape3D_i3pqv")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.828715, -0.362212, 0.426653, 0, 0.76233, 0.647189, -0.55967, -0.536336, 0.631754, 9.32634, 11.6537, 12.4883)
+environment = SubResource("Environment_0xm2m")
+doppler_tracking = 1
+fov = 50.0
+size = 20.0

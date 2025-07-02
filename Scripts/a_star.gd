@@ -11,11 +11,13 @@ var astar = AStar3D.new()
 var cube_mesh = BoxMesh.new()
 var red_material = StandardMaterial3D.new()
 var green_material = StandardMaterial3D.new()
+var blue_material = StandardMaterial3D.new()
 
 func _ready() -> void:
 	cube_mesh.size = Vector3(0.25,0.25,0.25)
 	red_material.albedo_color = Color.FIREBRICK
 	green_material.albedo_color = Color.LIME_GREEN
+	blue_material.albedo_color = Color.SKY_BLUE
 	
 	var pathables = get_tree().get_nodes_in_group("pathable")
 	_add_points(pathables)
