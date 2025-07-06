@@ -1,10 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://d0tyekm5axms8"]
+[gd_scene load_steps=17 format=3 uid="uid://d0tyekm5axms8"]
 
 [ext_resource type="PackedScene" uid="uid://dpti0bhau7rvy" path="res://player.tscn" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://br73dup2bh7p" path="res://Scripts/a_star.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dcaaxjsgxysfm" path="res://enemy.tscn" id="2_h2yge"]
 [ext_resource type="Texture2D" uid="uid://b0wt8powluuuo" path="res://Assets/256x256_Textures/Dirt/Dirt_01-256x256.png" id="4_lquwl"]
 [ext_resource type="PackedScene" uid="uid://cjbpnxg441yil" path="res://basaltic_columns.tscn" id="5_7mycd"]
+[ext_resource type="Material" uid="uid://cj306e5wwc1vc" path="res://Assets/Materials/bricks.tres" id="5_272bh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dm0k"]
 albedo_color = Color(0.47835, 0.257173, 0.0502687, 1)
@@ -22,6 +23,7 @@ size = Vector3(100, 0.5, 100)
 size = Vector3(4, 4, 4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
+material = ExtResource("5_272bh")
 size = Vector3(4, 4, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
@@ -42,7 +44,10 @@ size = Vector3(92.4415, 4.5166, 4)
 [node name="Main" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 100, 0)
+transform = Transform3D(0.906308, 0.408218, -0.109382, 0, 0.258819, 0.965926, 0.422618, -0.875426, 0.23457, 0, 10, 0)
+light_color = Color(0.937859, 0.849747, 0.800888, 1)
+light_energy = 1.5
+shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_1bvp3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60147, 15.1699)
@@ -86,6 +91,7 @@ transform = Transform3D(3.41921, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 28.774)
 shape = SubResource("BoxShape3D_lquwl")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ObstaclesContainer/StaticBody3D2"]
+material_override = ExtResource("5_272bh")
 mesh = SubResource("BoxMesh_7mycd")
 
 [node name="StaticBody3D9" type="StaticBody3D" parent="ObstaclesContainer"]
@@ -437,7 +443,7 @@ transform = Transform3D(-0.999914, 0, -0.0131419, 0, 1, 0, 0.0131419, 0, -0.9999
 transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 47.9678, 2.08155, -0.886074)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Limits/Limite4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.971061, 0.233718, 0.0374184)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.972416, 0.236795, 0.0338936)
 shape = SubResource("BoxShape3D_4c57u")
 
 [node name="basaltic-columns" parent="Limits/Limite4" instance=ExtResource("5_7mycd")]

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://qhnrmnl1p1y8" path="res://Assets/Tanks/BW/tank_1_bw.glb" id="2_4gyqm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qi2p4"]
-size = Vector3(1.27246, 1.68567, 1.76855)
+size = Vector3(1.27246, 1.62262, 1.76855)
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_7dm0k"]
 
@@ -17,7 +17,7 @@ background_color = Color(0.45648, 0.707497, 0.741226, 1)
 sky = SubResource("Sky_ig7tw")
 ambient_light_color = Color(0.295153, 0.59041, 0.654398, 1)
 
-[node name="Enemy" type="CharacterBody3D"]
+[node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0, 0)
 script = ExtResource("1_4gyqm")
 
@@ -27,7 +27,7 @@ script = ExtResource("1_4gyqm")
 transform = Transform3D(-1.25, 0, -1.88745e-07, 0, 1.25, 0, 1.88745e-07, 0, -1.25, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.169617, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.201143, 0)
 shape = SubResource("BoxShape3D_qi2p4")
 
 [node name="Camera3D" type="Camera3D" parent="."]

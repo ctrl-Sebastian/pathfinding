@@ -12,6 +12,7 @@ var path_recalc_cooldown: float = 0.0
 var min_path_recalc_interval: float = 0.5  # Minimum time between path recalculations
 @onready var timer: Timer = $Timer
 
+var health = 100
 
 func _physics_process(delta: float) -> void:
 	# Update cooldown timer
@@ -63,6 +64,12 @@ func update_path() -> void:
 			if close_points != Vector3.INF:
 				path = AStar.find_path(global_transform.origin, close_points, true)
 				find_next_point_in_path()
+
+func take_damage(amount: int):
+	health -= amount
+	if health <= 0:
+		queue_free()  # Or play death animation
+
 
 func _on_timer_timeout() -> void:
 	update_path()
