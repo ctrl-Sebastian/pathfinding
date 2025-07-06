@@ -4,7 +4,7 @@ extends Node3D
 @onready var obstacles_container: Node = $"../ObstaclesContainer"
 @onready var points_container: Node = $"../PointsContainer"
 
-var grid_step := 1.0
+var grid_step := 1.35
 var grid_y := 0.5
 var points := {} # key: point string, value: astar id
 var point_flags := {} # key: point string, value: true if inside obstacle, false otherwise

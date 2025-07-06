@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c88eok7usdbsp"]
+
+[ext_resource type="Script" uid="uid://bp8ed1vbpjltx" path="res://Scripts/cannon_ball.gd" id="1_tgmg3"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_u1e6c"]
+
+[node name="CannonBall" type="RigidBody3D"]
+script = ExtResource("1_tgmg3")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+rings = 12
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_u1e6c")

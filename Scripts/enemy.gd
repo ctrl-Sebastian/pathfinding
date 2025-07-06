@@ -12,6 +12,7 @@ var path_recalc_cooldown: float = 0.0
 var min_path_recalc_interval: float = 0.5  # Minimum time between path recalculations
 @onready var timer: Timer = $Timer
 
+
 func _physics_process(delta: float) -> void:
 	# Update cooldown timer
 	if path_recalc_cooldown > 0:
