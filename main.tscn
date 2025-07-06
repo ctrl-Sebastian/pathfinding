@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://d0tyekm5axms8"]
+[gd_scene load_steps=13 format=3 uid="uid://d0tyekm5axms8"]
 
 [ext_resource type="PackedScene" uid="uid://dpti0bhau7rvy" path="res://player.tscn" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://br73dup2bh7p" path="res://Scripts/a_star.gd" id="1_ig7tw"]
@@ -23,6 +23,9 @@ size = Vector3(4, 4, 4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
 size = Vector3(4, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
+size = Vector3(4, 4, 7.67096)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
 size = Vector3(99.063, 4, 4)
@@ -58,7 +61,6 @@ skeleton = NodePath("../..")
 shape = SubResource("BoxShape3D_ig7tw")
 
 [node name="ObstaclesContainer" type="Node" parent="."]
-unique_name_in_owner = true
 
 [node name="StaticBody3D" type="StaticBody3D" parent="ObstaclesContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.06891, 2.08155, -6.70142)
@@ -114,7 +116,8 @@ mesh = SubResource("BoxMesh_7mycd")
 transform = Transform3D(-5.40739, 0, -3.50482e-08, 0, 0.849022, 0, 4.72729e-07, 0, -0.400905, 0.829473, 2, 6.13186)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ObstaclesContainer/StaticBody3D6"]
-shape = SubResource("BoxShape3D_lquwl")
+transform = Transform3D(1, 0, 8.88178e-16, 0, 1, 0, 0, 0, 1, 0, 0, -0.228909)
+shape = SubResource("BoxShape3D_272bh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ObstaclesContainer/StaticBody3D6"]
 visible = false
@@ -511,3 +514,5 @@ transform = Transform3D(-0.999914, 0, -0.0131419, 0, 1, 0, 0.0131419, 0, -0.9999
 
 [node name="basaltic-columns24" parent="Limits/Limite4" instance=ExtResource("5_7mycd")]
 transform = Transform3D(-0.999914, 0, -0.0131419, 0, 1, 0, 0.0131419, 0, -0.999914, 16.6225, -1.16484, -0.21847)
+
+[node name="PointsContainer" type="Node" parent="."]

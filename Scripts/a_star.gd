@@ -1,23 +1,27 @@
 extends Node3D
 
 @export var debug: bool = false
-@onready var obstacles_container: Node = %ObstaclesContainer
+@onready var obstacles_container: Node = $"../ObstaclesContainer"
+@onready var points_container: Node = $"../PointsContainer"
 
 var grid_step := 1.0
 var grid_y := 0.5
-var points := {}
+var points := {} # key: point string, value: astar id
+var point_flags := {} # key: point string, value: true if inside obstacle, false otherwise
 var astar = AStar3D.new()
 
 var cube_mesh = BoxMesh.new()
 var red_material = StandardMaterial3D.new()
 var green_material = StandardMaterial3D.new()
 var blue_material = StandardMaterial3D.new()
+var black_material = StandardMaterial3D.new()
 
 func _ready() -> void:
-	cube_mesh.size = Vector3(0.25,0.25,0.25)
+	cube_mesh.size = Vector3(0.25, 0.25, 0.25)
 	red_material.albedo_color = Color.FIREBRICK
 	green_material.albedo_color = Color.LIME_GREEN
 	blue_material.albedo_color = Color.SKY_BLUE
+	black_material.albedo_color = Color.BLACK
 	
 	var pathables = get_tree().get_nodes_in_group("pathable")
 	_add_points(pathables)
@@ -33,10 +37,14 @@ func world_point_to_astar(world_point: Vector3) -> String:
 func _add_point(point: Vector3):
 	point.y = grid_y
 	var id = astar.get_available_point_id()
-	
+	var key = world_point_to_astar(point)
+	points[key] = id
+	var inside_obstacle = _is_point_inside_obstacle(point)
+	point_flags[key] = inside_obstacle
 	astar.add_point(id, point)
-	points[world_point_to_astar(point)] = id
-	_create_nav_cube(point)
+	if inside_obstacle:
+		astar.set_point_disabled(id, true) # <-- Disable point in AStar3D
+	_create_nav_cube(point, inside_obstacle)
 
 func _is_point_inside_obstacle(point: Vector3) -> bool:
 	if obstacles_container:
@@ -68,7 +76,6 @@ func _is_point_inside_obstacle(point: Vector3) -> bool:
 					# Add more shape checks as needed
 	return false
 
-
 func _add_points(pathables: Array):
 	for pathable in pathables:
 		var mesh = pathable.get_node("MeshInstance")
@@ -81,12 +88,8 @@ func _add_points(pathables: Array):
 		for x in range(x_steps):
 			for z in range(z_steps):
 				var next_point = start_point + Vector3(x * grid_step, 0, z * grid_step)
-				next_point.y = grid_y  # Align with your grid's Y level
-
-				# Check if the point is inside any obstacle
-				if not _is_point_inside_obstacle(next_point):
-					_add_point(next_point)
-
+				next_point.y = grid_y # Align with your grid's Y level
+				_add_point(next_point)
 
 func _get_adjacent_points(world_point: Vector3) -> Array:
 	var adjacent_points = []
@@ -97,43 +100,75 @@ func _get_adjacent_points(world_point: Vector3) -> Array:
 			if search_offset == Vector3.ZERO:
 				continue
 
-			var potential_neighbor = world_point_to_astar(world_point + search_offset)
-			if points.has(potential_neighbor):
-				adjacent_points.append(points[potential_neighbor])
+			var neighbor_pos = world_point + search_offset
+			var neighbor_key = world_point_to_astar(neighbor_pos)
+			# Only connect to neighbors not inside obstacles
+			if points.has(neighbor_key) and not point_flags.get(neighbor_key, false):
+				adjacent_points.append(points[neighbor_key])
 	return adjacent_points
 
 func _connect_points():
-	for point in points:
-		var pos_str = point.split(",")
-		var world_pos := Vector3(float(pos_str[0]), float(pos_str[1]), float(pos_str[2]))
-		var adjacent_points = _get_adjacent_points(world_pos)
-		var current_id = points[point]
-		for neighbor_id in adjacent_points:
-			if not astar.are_points_connected(current_id, neighbor_id):
-				astar.connect_points(current_id, neighbor_id)
-				if debug:
-					get_child(current_id).material_override = green_material
-					get_child(neighbor_id).material_override = green_material
+	var space = get_world_3d().direct_space_state
+	for key in points.keys():
+		if point_flags[key]: continue
+		var id_a = points[key]
+		var pos_str = key.split(",")
+		var a_pos = Vector3(pos_str[0].to_float(), pos_str[1].to_float(), pos_str[2].to_float())
+		var adj = _get_adjacent_points(a_pos)
 
-func _create_nav_cube(position: Vector3):
+		for id_b in adj:
+			# get B position
+			var b_pos = astar.get_point_position(id_b)
+
+			# build ray query
+			var rq = PhysicsRayQueryParameters3D.new()
+			rq.from = a_pos + Vector3.UP * 0.1
+			rq.to = b_pos + Vector3.UP * 0.1
+			rq.collision_mask = 1 # your Obstacles layer
+
+			var hit = space.intersect_ray(rq)
+			if hit.is_empty():
+				if not astar.are_points_connected(id_a, id_b):
+					astar.connect_points(id_a, id_b)
+					if debug:
+						points_container.get_child(id_a).material_override = green_material
+						points_container.get_child(id_b).material_override = green_material
+
+func _create_nav_cube(position: Vector3, inside_obstacle: bool):
 	if debug:
 		var cube = MeshInstance3D.new()
 		cube.mesh = cube_mesh
-		cube.material_override = red_material
-		add_child(cube)
+		cube.material_override = black_material if inside_obstacle else red_material
+		points_container.add_child(cube)
 		position.y = grid_y
 		cube.global_transform.origin = position
 
 func find_path(from: Vector3, to: Vector3, allow_partial_path: bool) -> Array:
-	var start_id = astar.get_closest_point(from, true)
-	var end_id = astar.get_closest_point(to, true)
-	return astar.get_point_path(start_id, end_id, allow_partial_path)
+	# Find closest valid points (not inside obstacles)
+	var from_id = _get_closest_valid_point(from)
+	var to_id = _get_closest_valid_point(to)
+	if from_id == -1 or to_id == -1:
+		return []
+	return astar.get_point_path(from_id, to_id, allow_partial_path)
 
-	
+func _get_closest_valid_point(pos: Vector3) -> int:
+	var min_dist = INF
+	var closest_id = -1
+	for key in points.keys():
+		if point_flags.get(key, false):
+			continue
+		var id = points[key]
+		var point_pos = astar.get_point_position(id)
+		var dist = pos.distance_to(point_pos)
+		if dist < min_dist:
+			min_dist = dist
+			closest_id = id
+	return closest_id
+
 func disable_obstacle_points(obstacles: Array):
 	for obstacle in obstacles:
 		var obstacle_pos = obstacle.global_transform.origin
-		obstacle_pos.y = grid_y  # Align with your grid's Y level
+		obstacle_pos.y = grid_y # Align with your grid's Y level
 		var key = world_point_to_astar(obstacle_pos)
 		if points.has(key):
 			var id = points[key]
